@@ -1,5 +1,6 @@
-# Import file "pinning-1" (sizes and positions are scaled 1:2)
-sketch = Framer.Importer.load("imported/pinning-1@2x")
+# Import file "pinning-0" (sizes and positions are scaled 1:2)
+sketch = Framer.Importer.load("imported/pinning-0@2x")
+
 
 
 
@@ -34,6 +35,7 @@ coords = (pt) -> Canvas.convertPointToScreen(pt)
 # Stage objects
 stage		= sketch.stage
 key 		= sketch.key
+keyGraphic	= sketch.keyGraphic
 mapMarker 	= sketch.mapMarker
 lockHitRect	= sketch.lockHitRect
 lock 		= sketch.pinnedThread
@@ -93,19 +95,26 @@ key.states.isNotPickedUp =
 	opacity: 1
 	x: app.key.startX
 	y: app.key.startY
-	scale: 0.25
 key.states.hidden =
 	animationOptions:
 		curve: 'ease-out'
 		time: 0.1
-	opacity: 0
-	scale: 
-	
+	opacity: 1
 key.states.isPickedUp =
 	animationOptions:
 		curve: "spring(800,15,0)"
 	opacity: 1
+	
+keyGraphic.states.isNotPickedUp =
+	animationOptions:
+		curve: 'ease-out'
+		time: 0.1
+	scale: 0.25
+keyGraphic.states.isPickedUp =
+	animationOptions:
+		curve: "spring(800,15,0)"
 	scale: 1
+	
 
 lock.states.animationOptions =
 	curve: "spring(800, 15, 10)"
@@ -158,6 +167,7 @@ app.emitter.on "uichange", (event) ->
 			tray.stateSwitch("closed")
 			matte.stateSwitch("hidden")
 			key.stateSwitch("hidden")
+			keyGraphic.stateSwitch "isNotPickedUp"
 			mapMarker.stateSwitch("visible")
 			lockConfirm.stateSwitch "off"
 			lockHint.stateSwitch "on"
@@ -166,6 +176,7 @@ app.emitter.on "uichange", (event) ->
 		when "keyIsPickedUp"
 			tray.animate("opened")
 			key.animate("isPickedUp")
+			keyGraphic.animate "isPickedUp"
 			matte.animate("visible")
 			mapMarker.animate("hidden")
 		
@@ -173,7 +184,8 @@ app.emitter.on "uichange", (event) ->
 			tray.animate("closed")
 			matte.animate("hidden")
 			lockHint.animate "on"
-			key.states.switch "isNotPickedUp"
+			key.animate "isNotPickedUp"
+			keyGraphic.animate "isNotPickedUp"
 			Utils.delay 0.25, ->
 				key.states.switch "hidden"
 				mapMarker.animate("visible")
@@ -247,6 +259,8 @@ stage.onTouchMove ->
 	e = Events.touchEvent(event)
 	app.key.ptTouchMove = coords(point(e.clientX, e.clientY))
 	
+	print "isPressed", app.key.isPressed
+	print "isDragging", app.key.isDragging
 	# User has moved before longtouch threshold reached
 	if app.key.isPressed && !app.key.isDragging
 		killDrag()

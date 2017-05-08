@@ -163,7 +163,8 @@ app.emitter.on "uichange", (event) ->
 		return
 	
 	switch event.name
-		when "reset"		
+		when "reset"	
+			key.draggable.enabled = true	
 			tray.stateSwitch("closed")
 			matte.stateSwitch("hidden")
 			key.stateSwitch("hidden")
@@ -181,6 +182,7 @@ app.emitter.on "uichange", (event) ->
 			mapMarker.animate("hidden")
 		
 		when "keyWillDrop"
+			key.draggable.enabled = false
 			tray.animate("closed")
 			matte.animate("hidden")
 			lockHint.animate "on"
@@ -220,11 +222,12 @@ killDrag = (willDrop) ->
 	print "Drag Killed"
 	app.key.isDragging = false
 	app.key.isPressed = false
-	app.key.ptTouchStart = {x:null, y:null}
+	app.key.ptTouchStart = point(null, null)
+	app.key.ptTouchMove = point(null, null)
 	clearTimeout(app.key.longpressTimer)
 		
 	
-key.draggable.enabled = true
+
 
 
 # The stage is responsible for responding to user
@@ -250,7 +253,7 @@ stage.onTouchStart ->
 			pointInRect(app.key.ptTouchMove, layerToRect(key)))
 				print "Start", app.key.ptTouchStart
 				print "Move", app.key.ptTouchMove
-				
+				key.draggable.enabled = true
 				app.key.isDragging = true
 				app.emitter.emit "uichange", {name:"keyIsPickedUp"}
 	), app.key.longpressHoldThreshold

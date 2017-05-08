@@ -218,14 +218,13 @@ app.emitter.on "uichange", (event) ->
 # Resets drag flags. If the key is dropped, tell the state manager
 killDrag = (willDrop) ->
 	print "Drag Killed"
-	key.draggable.enabled = false
 	app.key.isDragging = false
 	app.key.isPressed = false
 	app.key.ptTouchStart = {x:null, y:null}
 	clearTimeout(app.key.longpressTimer)
 		
 	
-
+key.draggable.enabled = true
 
 
 # The stage is responsible for responding to user
@@ -234,7 +233,8 @@ stage.onTouchStart ->
 	e = Events.touchEvent(event)
 	ptTouchStart = coords(point(e.clientX, e.clientY))
 	
-	if !pointInRect(app.key.ptTouchMove, layerToRect(key))
+	print "Touch detected"
+	if !pointInRect(ptTouchStart, layerToRect(key))
 		return
 	else
 		app.key.ptTouchStart = ptTouchStart
@@ -250,7 +250,7 @@ stage.onTouchStart ->
 			pointInRect(app.key.ptTouchMove, layerToRect(key)))
 				print "Start", app.key.ptTouchStart
 				print "Move", app.key.ptTouchMove
-				key.draggable.enabled = true
+				
 				app.key.isDragging = true
 				app.emitter.emit "uichange", {name:"keyIsPickedUp"}
 	), app.key.longpressHoldThreshold

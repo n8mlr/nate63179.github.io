@@ -1,39 +1,48 @@
-<!DOCTYPE html>
 <html>
-	<head>
-		<meta charset="utf-8">
-		
-		<meta name="format-detection" content="telephone=no">
-		<meta name="apple-mobile-web-app-capable" content="yes">
-		<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<head>
+	<script src="//storage.googleapis.com/vrview/2.0/build/vrview.min.js"></script>
+</head>
+<body>
 
-		<script type="text/javascript">
-		// This automatically sets the right viewport scale on mobile devices
-		(function() {
- 		var scale = 1 / window.devicePixelRatio
- 		var viewport = "width=device-width, height=device-height, initial-scale=" + scale + ", maximum-scale=" + scale + ", user-scalable=no"
- 		var iOS = /iPad|iPhone|iPod/.test(navigator.platform)
- 		if (iOS) { viewport += ", shrink-to-fit=no" }
- 		document.write("<meta name=\"viewport\" content=\"" + viewport + "\">")
-		})()
-		</script>
+<!-- START copy -->
+<style>
+#vrview {
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	height: 100%;
+	width: 100%;
+	min-height: 500px;
+}
+</style>
 
-		<link rel="apple-touch-icon" href="framer/images/icon-120.png">
-		<link rel="apple-touch-icon" href="framer/images/icon-76.png" sizes="76x76">
-		<link rel="apple-touch-icon" href="framer/images/icon-120.png" sizes="120x120">
-		<link rel="apple-touch-icon" href="framer/images/icon-152.png" sizes="152x152">
-		<link rel="apple-touch-icon" href="framer/images/icon-180.png" sizes="180x180">
-		<link rel="apple-touch-icon" href="framer/images/icon-192.png" sizes="192x192">
+<div id="vrview"></div>
+<script>
 
-		<link rel="stylesheet" type="text/css" href="framer/style.css">
+function getParameterByName(name, url) {
+    if (!url) url = window.location.href;
+    name = name.replace(/[\[\]]/g, "\\$&");
+    var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
+        results = regex.exec(url);
+    if (!results) return null;
+    if (!results[2]) return '';
+    return decodeURIComponent(results[2].replace(/\+/g, " "));
+}
 
-		<script src="framer/coffee-script.js"></script>
-		<script src="framer/framer.js"></script>
-		<script src="framer/framer.generated.js"></script>
-		<script src="framer/framer.modules.js"></script>
-		<script src="framer/framer.init.js"></script>
+window.addEventListener('load', onVrViewLoad)
+function onVrViewLoad() {
+  var vrView = new VRView.Player('#vrview', {
+    image: getParameterByName("img"),
+    is_stereo: false,
+    width: "100%",
+    height: "100%",
+    is_autopan_off: false
+  });
+}
+</script>
+<!-- END copy -->
 
-	</head>
-	<body>
-	</body>
+</body>
 </html>
